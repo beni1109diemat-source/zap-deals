@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZAP! | Professional Dashboard</title>
+    <style>
+      :root {
+        --neon-mint: #00ffcc;
+        --bg-dark: #0a0b0d;
+        --card-bg: #111316;
+        --pure-white: #ffffff;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: #ffffff;
+        font-family: "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 50px 20px;
+        margin: 0;
+      }
+
+      .logo {
+        font-size: 5rem;
+        font-weight: 900;
+        color: var(--neon-mint);
+        letter-spacing: -4px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+      }
+
+      /* Filter-Bar wieder da */
+      .filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+
+      .filter-btn {
+        background: #1a1d21;
+        border: 1px solid #333;
+        color: #888;
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+
+      .filter-btn:hover {
+        border-color: var(--neon-mint);
+        color: var(--neon-mint);
+      }
+
+      .search-box {
+        background: #1a1d21;
+        border: 2px solid #2d3139;
+        padding: 18px 30px;
+        border-radius: 100px;
+        width: 100%;
+        max-width: 500px;
+        color: white;
+        font-size: 1.2rem;
+        text-align: center;
+        outline: none;
+        margin-bottom: 50px;
+      }
+
+      #results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+        width: 100%;
+        max-width: 1100px;
+      }
+
+      .product-card {
+        background: var(--card-bg);
+        border: 2px solid #222;
+        border-radius: 40px;
+        padding: 35px;
+        text-align: center;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .image-island {
+        background: var(--pure-white);
+        border-radius: 30px;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Platzhalter-Grafik falls Bilder blockiert sind */
+      .placeholder-icon {
+        width: 150px;
+        height: 100px;
+        background: #eee;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ccc;
+        font-weight: bold;
+        border: 4px dashed #ddd;
+      }
+
+      .product-name {
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+      }
+      .merchant {
+        color: #555;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+      }
+      .price-tag {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin: 20px 0;
+        color: white;
+      }
+
+      .zap-button {
+        background: var(--neon-mint);
+        color: #000;
+        border: none;
+        padding: 20px;
+        width: 100%;
+        border-radius: 22px;
+        font-weight: 900;
+        cursor: pointer;
+        font-size: 1.1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">ZAP!</div>
+
+    <div class="filter-bar">
+      <button class="filter-btn" onclick="quickSearch('Laptop')">Laptop</button>
+      <button class="filter-btn" onclick="quickSearch('Kopfhörer')">
+        Kopfhörer
+      </button>
+      <button class="filter-btn" onclick="quickSearch('iPhone')">iPhone</button>
+    </div>
+
+    <input
+      type="text"
+      class="search-box"
+      id="mainSearch"
+      placeholder="Suchen..."
+    />
+
+    <div id="results"></div>
+
+    <script>
+      const database = {
+        laptop: {
+          name: "MacBook Pro M3",
+          merchant: "Amazon",
+          price: "1.849,00",
+          type: "LAPTOP",
+        },
+        kopfhörer: {
+          name: "Sony WH-1000XM4",
+          merchant: "MediaMarkt",
+          price: "249,00",
+          type: "AUDIO",
+        },
+      };
+
+      const searchInput = document.getElementById("mainSearch");
+      const resultsGrid = document.getElementById("results");
+
+      function quickSearch(val) {
+        searchInput.value = val;
+        performSearch(val.toLowerCase());
+      }
+
+      searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter")
+          performSearch(e.target.value.toLowerCase().trim());
+      });
+
+      function performSearch(query) {
+        resultsGrid.innerHTML = "";
+        const item = database[query];
+
+        if (item) {
+          resultsGrid.innerHTML = `
+                    <div class="product-card">
+                        <div class="image-island">
+                            <div class="placeholder-icon">${item.type}</div>
+                        </div>
+                        <div class="product-name">${item.name}</div>
+                        <div class="merchant">Händler: ${item.merchant}</div>
+                        <div class="price-tag">${item.price} €</div>
+                        <button class="zap-button">ZUM BESTPREIS</button>
+                    </div>
+                `;
+        } else {
+          resultsGrid.innerHTML = `<p style="text-align:center; width:100%; color:#444;">Suche nach 'Laptop' oder 'Kopfhörer'</p>`;
+        }
+      }
+    </script>
+  </body>
+</html>
