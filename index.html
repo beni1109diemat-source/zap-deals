@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAP! | Affiliate Deals</title>
+    <style>
+        :root {
+            --neon: #00ffcc;
+            --bg: #0a0b0d;
+            --card: #111316;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo { 
+            font-size: 5rem; 
+            font-weight: 900; 
+            color: var(--neon); 
+            letter-spacing: -4px; 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+        }
+
+        .search-container { 
+            width: 100%; 
+            max-width: 600px; 
+            margin-bottom: 50px; 
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 20px 30px;
+            border-radius: 50px;
+            border: 2px solid #222;
+            background: #16181d;
+            color: white;
+            font-size: 1.2rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .search-box:focus { border-color: var(--neon); }
+
+        #results { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 25px; 
+            width: 100%; 
+            max-width: 1200px; 
+        }
+
+        .card { 
+            background: var(--card); 
+            border-radius: 30px; 
+            padding: 25px; 
+            border: 1px solid #222; 
+            text-align: center;
+        }
+
+        .img-box {
+            background: white;
+            border-radius: 20px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        .img-box img { 
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; 
+        }
+
+        h3 { font-size: 1.2rem; min-height: 3em; margin: 10px 0; color: #ccc; }
+        .price { font-size: 2.5rem; font-weight: 900; margin: 15px 0; color: white; }
+
+        .btn {
+            background: var(--neon);
+            color: black;
+            text-decoration: none;
+            padding: 18px;
+            display: block;
+            border-radius: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">ZAP!</div>
+    <div class="search-container">
+        <input type="text" class="search-box" id="suche" placeholder="Suche PS5, Dyson...">
+    </div>
+    <div id="results"></div>
+
+    <script>
+        const partnerID = "beni110901-21";
+
+        const products = [
+            { 
+                name: "PlayStation 5 Slim", 
+                asin: "B0CLT6ST2C", 
+                price: "449,00", 
+                tags: ["ps5", "sony"],
+                img: "https://cdn.idealo.com/folder/Product/205153/3/205153337/s2_produktbild_gross/sony-playstation-5-slim-ps5-slim-fortnite-cobalt-star-bundle.jpg" 
+            },
+            { 
+                name: "Apple AirPods Pro 2", 
+                asin: "B0BDHWDR12", 
+                price: "239,00", 
+                tags: ["apple", "airpods"],
+                img: "https://i.ebayimg.com/images/g/WM8AAOSwBxBnYeQ3/s-l960.webp"
+            },
+            { 
+                name: "Nintendo Switch OLED", 
+                asin: "B09HBZ9954", 
+                price: "329,00", 
+                tags: ["nintendo", "switch"],
+                img: "https://cdn.idealo.com/folder/Product/202600/9/202600914/s2_produktbild_gross/nintendo-switch-oled-modell-the-legend-of-zelda-tears-of-the-kingdom-edition.jpg"
+            },
+            { 
+                name: "Samsung Galaxy S24", 
+                asin: "B0CS6YRT2T", 
+                price: "899,00", 
+                tags: ["samsung", "s24"],
+                img: "https://cdn.idealo.com/folder/Product/203713/8/203713826/s2_produktbild_mittelgross/samsung-galaxy-s24-128gb-onyx-black.jpg"
+            },
+            { 
+                name: "Dyson V15 Detect", 
+                asin: "B095K32L8V", 
+                price: "599,00", 
+                tags: ["dyson", "sauger"],
+                // Wir nutzen hier den Proxy-Trick
+                img: "https://res.cloudinary.com/demo/image/fetch/https://m.media-amazon.com/images/I/51uI69Iq3nL._AC_SL1500_.jpg"
+            }
+        ];
+
+        const input = document.getElementById('suche');
+        const grid = document.getElementById('results');
+
+        input.addEventListener('input', () => {
+            const val = input.value.toLowerCase().trim();
+            grid.innerHTML = '';
+            if (val.length < 2) return;
+
+            const found = products.filter(p => p.name.toLowerCase().includes(val) || p.tags.some(t => t.includes(val)));
+
+            found.forEach(item => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <div class="img-box">
+                            <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300?text=Bild+Fehler'">
+                        </div>
+                        <h3>${item.name}</h3>
+                        <div class="price">${item.price} €</div>
+                        <a href="https://www.amazon.de/dp/${item.asin}/?tag=${partnerID}" target="_blank" class="btn">ZUM ANGEBOT</a>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
